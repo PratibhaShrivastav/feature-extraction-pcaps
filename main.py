@@ -19,13 +19,11 @@ def compute_features():
                             index2 = 0
                             for ff in nestedfiles:
                                 if ff.endswith("pcap.tar.gz"):
-                                    print(f)
                                     index2 = index2 + 1
                                     tar = tarfile.open(os.path.join(nestedpath,ff), 'r:gz')
                                     tar.extractall(path=nestedpath+"/tarfile"+str(index2))
                                     tar.close()
                                     f_new = f[:-7] + ".csv"
-                                    print(f_new)
                                     os.rename(os.path.join(nestedpath+"\\tarfile"+str(index2),"sample_for_analysis.apk.pcap"), os.path.join(nestedpath+"\\tarfile"+str(index2),f_new))
                                 if not ff.endswith(".pcap"):
                                     os.remove(os.path.join(nestedpath,ff))
