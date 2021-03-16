@@ -23,7 +23,7 @@ def compute_features():
                                     tar = tarfile.open(os.path.join(nestedpath,ff), 'r:gz')
                                     tar.extractall(path=nestedpath+"/tarfile"+str(index2))
                                     tar.close()
-                                    f_new = f[:-7] + ".csv"
+                                    f_new = f[:-7] + ".pcap"
                                     os.rename(os.path.join(nestedpath+"\\tarfile"+str(index2),"sample_for_analysis.apk.pcap"), os.path.join(nestedpath+"\\tarfile"+str(index2),f_new))
                                 if not ff.endswith(".pcap"):
                                     os.remove(os.path.join(nestedpath,ff))
@@ -31,7 +31,6 @@ def compute_features():
                         os.remove(os.path.join(path,f))
 
     def malware_features():
-        cnt = 1
         folder_name = "Pcaps_Malware"
         for pcap in glob.glob(folder_name + '/**/*.pcap', recursive=True):
             os.system("tshark -r {} -T json > file_json".format(pcap))
@@ -39,13 +38,12 @@ def compute_features():
             data = json.load(f) 
             data = pd.json_normalize(data)
             file_subname = pcap.split("\\")
-            file_name = file_subname[1] + str(cnt) + ".csv"
-            cnt = cnt + 1
+            file_subname[5] = file_subname[5][:-5]
+            file_name = file_subname[5] + ".csv"
             data.to_csv(os.path.join("CSV_Malware", file_name))
 
 
     def legitimate_features():
-        cnt = 1
         folder_name = "Pcaps_Legitimate"
         for pcap in glob.glob(folder_name + '/**/*.pcap', recursive=True):
             os.system("tshark -r {} -T json > file_json".format(pcap))
@@ -53,8 +51,8 @@ def compute_features():
             data = json.load(f) 
             data = pd.json_normalize(data)
             file_subname = pcap.split("\\")
-            file_name = file_subname[1] + str(cnt) + ".csv"
-            cnt = cnt + 1
+            file_subname[5] = file_subname[5][:-5]
+            file_name = file_subname[5] + ".csv"
             data.to_csv(os.path.join("CSV_legitimate", file_name))
 
     extract_tar()
